@@ -1,0 +1,14 @@
+﻿@{
+    var usuario = ViewBag.UsuarioLogueado as string;
+    var idUsuario = ViewBag.IdUsuario as string;
+}
+
+@if (!string.IsNullOrEmpty(usuario) && !string.IsNullOrEmpty(idUsuario))
+{
+    <script>
+        localStorage.setItem('usuarioLogueado', '@usuario');
+        localStorage.setItem('idUsuario', '@idUsuario');
+        window.location.href = '/Home/Index';
+    </script>
+    <p>Iniciando sesión...</p>
+}

@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Ventas";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Ventas - Kingdom Rush</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ffd700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2a2a2a;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #ffd700;
+        }
+
+        tr:hover {
+            background-color: #3d3d3d;
+        }
+
+        .btn-volver {
+            background-color: #ffd700;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+            .btn-volver:hover {
+                background-color: #f7c700;
+            }
+    </style>
+</head>
+<body>
+    <a href="/Admin/Panel" class="btn-volver">⬅ Volver al Panel</a>
+    <h1>📑 Historial de Ventas</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID Factura</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Subtotal</th>
+                <th>IVA</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-ventas">
+            <!-- Las ventas se cargarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        async function cargarVentas() {
+            try {
+                const response = await fetch('/api/ventas');
+                const ventas = await response.json();
+
+                const tabla = document.getElementById('tabla-ventas');
+                tabla.innerHTML = '';
+
+                ventas.forEach(v => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${v.id_factura}</td>
+                        <td>${v.nombre_cliente}</td>
+                        <td>${new Date(v.fecha).toLocaleString()}</td>
+                        <td>$${v.subtotal.toFixed(2)}</td>
+                        <td>$${v.iva.toFixed(2)}</td>
+                        <td>$${v.total.toFixed(2)}</td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            } catch (err) {
+                console.error('Error cargando ventas:', err);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", cargarVentas);
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+html.dark-total,
+body.dark-total {
+  background: black !important;
+  background-image: none !important;
+}
+
+
+body.dark-total * {
+  background-image: none !important;
+}
+
+body.dark-total::before,
+body.dark-total::after,
+html.dark-total::before,
+html.dark-total::after {
+  background-image: none !important;
+}
+
+
+body.dark-total .background-wall {
+  display: none !important;
+}
+
+
+
+html.dark-total,
+body.dark-total,
+body.dark-total * {
+  background-image: none !important;
+  background-color: black !important;
+  color: white !important;
+}
+
+body.dark-total .background-wall {
+  background-image: none !important;
+  background-color: black !important;
+}
+
+
+/* Fondos específicos */
+body.dark-total .contenedor-principal,
+body.dark-total header,
+body.dark-total nav,
+body.dark-total .producto,
+body.dark-total .form-container,
+body.dark-total .dropdown-content,
+body.dark-total .buscador-tunicas input,
+body.dark-total .buscador-tunicas button {
+  background-color: rgba(20, 20, 20, 0.85) !important;
+  color: white !important;
+  border-color: #777 !important;
+}
+
+/* Botones */
+body.dark-total .btn-auth,
+body.dark-total .boton-carrito,
+body.dark-total button {
+  background-color: #333 !important;
+  color: #ffd700 !important;
+  border: 1px solid #d4af37 !important;
+}
+
+body.dark-total .btn-auth:hover,
+body.dark-total .boton-carrito:hover {
+  background-color: #555 !important;
+  color: #fff !important;
+  
+  
+
+  
+
+
+}

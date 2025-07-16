@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kingdom Rush - @ViewData["Title"]</title>
+    <link rel="icon" href="https://em-content.zobj.net/source/microsoft-teams/363/crown_1f451.png" />
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/modooscuro.css" />
+    <script src="~/js/modooscuro.js" defer></script>
+</head>
+
+    <body>
+        @RenderBody()
+
+        @RenderSection("Scripts", required: false)
+
+        @section Scripts {
+            <partial name="_ValidationScriptsPartial" />
+        }
+
+    </body>
+</html>

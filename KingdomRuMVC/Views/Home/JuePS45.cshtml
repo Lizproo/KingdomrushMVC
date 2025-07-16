@@ -1,0 +1,217 @@
+﻿@{
+    ViewData["Title"] = "Juegos PS4/5";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kingdom Rush - Juegos PS4/5</title>
+
+    <link rel="stylesheet" href="@Url.Content("~/css/style.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/modooscuro.css")" />
+    <script src="@Url.Content("~/js/modooscuro.js")" defer></script>
+    <script src="@Url.Content("~/js/carrito.js")" defer></script>
+
+    <link rel="icon" href="https://em-content.zobj.net/source/microsoft-teams/363/crown_1f451.png" />
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div id="menu-lateral" class="menu-lateral">
+        <button onclick="toggleMenu()">✖️</button>
+        <a href="/Home/index">🏰 Inicio</a>
+        <a href="/Home/Consolas">🕹️ Consolas</a>
+        <a href="/Home/JuePS45">🎮 Juegos PS4/5</a>
+        <a href="/Home/JueXbox">🎮 Juegos Xbox</a>
+        <a href="/Home/Juenintendo">🎮 Juegos Nintendo</a>
+        <a href="/Home/JuePC">🖥️ Juegos PC</a>
+        <a href="/Home/tunicas">🧥 Túnicas</a>
+        <a href="/Home/accesorios">⚔️ Armamento</a>
+        <a href="/Usuarios/login">🔐 Iniciar sesión</a>
+        <a href="/Usuarios/Create">📝 Crear cuenta</a>
+        <a href="/Carrito/Mochila">🎒 Mochilaaaaa</a>
+    </div>
+
+    <div class="contenedor-principal">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+                <div id="auth-area" class="nav-derecha"></div>
+            </div>
+
+            <h1>👑 Kingdom Rush</h1>
+            <p class="subtitulo">El mercado de los héroes digitales</p>
+            <button id="btn-modo-oscuro">🌙 Alternar Reino Oscuro</button>
+        </header>
+
+        <nav class="navbar">
+            <a href="/Home/index">🏰 Inicio</a>
+            <div class="dropdown">
+                <a href="#" id="reliquiasBtn">🕹️ Reliquias Retro ▼</a>
+                <div class="dropdown-content" id="submenuReliquias">
+                    <a href="/Home/Consolas">Consolas de Videojuegos</a>
+                    <a href="/Home/JuePS45">Juegos para PlayStation</a>
+                    <a href="/Home/JueXbox">Juegos para Xbox</a>
+                    <a href="/Home/Juenintendo">Juegos para Nintendo</a>
+                    <a href="/Home/JuePC">Juegos para PC</a>
+                </div>
+            </div>
+            <a href="/Home/tunicas">🧥 Túnicas</a>
+            <a href="/Home/accesorios">⚔️ Armamento</a>
+        </nav>
+
+        <main>
+            <section class="productos" id="contenedor-ps">
+                <p style="text-align:center;">Cargando juegos PS desde la base de datos...</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function cargarJuegosPS() {
+            const contenedor = document.getElementById("contenedor-ps");
+            contenedor.innerHTML = "";
+
+        fetch("/api/productos/ps")
+            .then(res => res.json())
+            .then(productos => {
+                const contenedor = document.getElementById("contenedor-ps");
+                contenedor.innerHTML = "";
+
+                if (productos.length === 0) {
+                    contenedor.innerHTML = "<p style='text-align:center;'>No hay juegos disponibles.</p>";
+                    return;
+                }
+
+                productos.forEach(producto => {
+                    if (producto.stock <= 0) return;
+
+                    const imagenUrl = producto.imagen_url?.startsWith("http")
+                        ? producto.imagen_url
+                        : `/images/${producto.imagen_url}`;
+
+                    const div = document.createElement("div");
+                    div.className = "producto";
+
+                    div.innerHTML = `
+                        <img src="${imagenUrl}" alt="${producto.nombre}" class="producto-img">
+                        <h3 class="producto-nombre">${producto.nombre}</h3>
+                        <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
+                        <div class="producto-opciones">
+                            <input type="number" min="1" max="${producto.stock}" value="1" class="cantidad-input" data-id="${producto.id}">
+                            <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', \`${producto.nombre}\`, ${producto.precio}, '${producto.imagen_url}', ${producto.usa_talla})">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    `;
+                    contenedor.appendChild(div);
+                });
+            })
+            .catch(error => {
+                console.error("❌ Error al cargar juegos PS:", error);
+                const contenedor = document.getElementById("contenedor-ps");
+                contenedor.innerHTML = "<p style='text-align:center;'>Error al cargar juegos.</p>";
+            });
+
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            cargarAuthUI();
+            cargarAccesosMovil();
+            ocultarAccesosMovilEnEscritorio();
+            cargarJuegosPS();
+        });
+
+        function toggleMenu() {
+            const menuLateral = document.getElementById("menu-lateral");
+
+            if (window.innerWidth <= 768) {
+                menuLateral.classList.toggle("abierto");
+
+                document.addEventListener("click", function cerrarFuera(e) {
+                    if (
+                        menuLateral.classList.contains("abierto") &&
+                        !menuLateral.contains(e.target) &&
+                        !e.target.classList.contains("menu-toggle")
+                    ) {
+                        menuLateral.classList.remove("abierto");
+                        document.removeEventListener("click", cerrarFuera);
+                    }
+                });
+            }
+        }
+
+        function cargarAuthUI() {
+            const authDiv = document.getElementById("auth-area");
+            const usuario = localStorage.getItem("usuarioLogueado");
+            authDiv.innerHTML = "";
+
+            if (usuario) {
+                const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
+                const nombre = usuarios[usuario]?.nombre || "Usuario";
+
+                authDiv.innerHTML = `
+                    <div class="usuario-logueado" id="usuarioBox" style="display:flex; gap:12px; align-items:center;">
+                        <button onclick="toggleUsuarioMenu()">👤 ${nombre} ▼</button>
+                        <a href="/Carrito/Mochila" class="btn-auth">🎒 Mochila (<span id="cart-count">0</span>)</a>
+                        <div class="menu-usuario" id="menuUsuario">
+                            <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                authDiv.innerHTML = `
+                    <div class="botones-no-log">
+                        <a href="/Usuarios/login" class="btn-auth">🔐 Iniciar Sesión</a>
+                        <a href="/Usuarios/Create" class="btn-auth">📝 Registrarse</a>
+                        <a href="/Carrito/Mochila" class="btn-auth">🎒 Mochila (<span id="cart-count">0</span>)</a>
+                    </div>
+                `;
+            }
+
+            const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+            const contador = document.getElementById("cart-count");
+            if (contador) contador.textContent = carrito.length;
+        }
+
+        function toggleUsuarioMenu() {
+            document.getElementById("usuarioBox").classList.toggle("open");
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem("usuarioLogueado");
+            location.reload();
+        }
+
+        function cargarAccesosMovil() {
+            const contenedor = document.getElementById("accesosMovil");
+            if (!contenedor) return;
+
+            const usuario = localStorage.getItem("usuarioLogueado");
+            const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
+            const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
+            const nombre = usuarios[usuario]?.nombre || "Usuario";
+
+            if (usuario) {
+                contenedor.innerHTML = `
+                    <a href="#" class="btn-auth" onclick="cerrarSesion()">👤 Cerrar sesión (${nombre})</a>
+                    <a href="/Home/carrito" class="btn-auth">🎒 Mochila (<span>${carrito.length}</span>)</a>
+                `;
+            } else {
+                contenedor.innerHTML = `
+                    <a href="/Usuarios/login" class="btn-auth">🔐 Iniciar sesión</a>
+                    <a href="/Usuarios/Create" class="btn-auth">📝 Crear cuenta</a>
+                    <a href="/Home/carrito" class="btn-auth">🎒 Mochila (<span>${carrito.length}</span>)</a>
+                `;
+            }
+        }
+
+        function ocultarAccesosMovilEnEscritorio() {
+            const acc = document.querySelector('.accesos-movil');
+            if (!acc) return;
+            acc.style.display = window.innerWidth > 768 ? 'none' : 'flex';
+        }
+    </script>
+</body>
+</html>

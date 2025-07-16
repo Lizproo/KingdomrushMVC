@@ -1,0 +1,121 @@
+﻿@model IEnumerable<KingdomRuMVC.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios";
+}
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        padding: 30px;
+    }
+
+    h1 {
+        color: #ffd700;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    .btn-crear {
+        background-color: #ffd700;
+        color: #222;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 22px;
+        text-decoration: none;
+        margin-bottom: 25px;
+        display: inline-block;
+        transition: background 0.2s;
+    }
+
+        .btn-crear:hover {
+            background-color: #f7c700;
+            color: #000;
+        }
+
+    table.table {
+        width: 100%;
+        background-color: #222;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px #0005;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    th, td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #444;
+        text-align: left;
+    }
+
+    th {
+        background-color: #333;
+        color: #ffd700;
+        font-size: 1.05em;
+        letter-spacing: 0.5px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background-color: #2a2a2a;
+        transition: background 0.2s;
+    }
+
+    a.action-link {
+        color: #ffd700;
+        font-weight: bold;
+        text-decoration: none;
+        margin: 0 4px;
+        transition: color 0.2s;
+    }
+
+        a.action-link:hover {
+            color: #fff;
+            text-shadow: 0 0 5px #ffd700;
+        }
+</style>
+
+<h1>👤 Usuarios</h1>
+
+<p>
+    <a asp-action="Create" class="btn-crear">➕ Crear Nuevo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.Apellido)</th>
+            <th>@Html.DisplayNameFor(model => model.Edad)</th>
+            <th>@Html.DisplayNameFor(model => model.Correo)</th>
+            <th>@Html.DisplayNameFor(model => model.Telefono)</th>
+            <th>@Html.DisplayNameFor(model => model.Direccion)</th>
+            <th>@Html.DisplayNameFor(model => model.Clave)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
+                <td>@Html.DisplayFor(modelItem => item.Edad)</td>
+                <td>@Html.DisplayFor(modelItem => item.Correo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                <td>@Html.DisplayFor(modelItem => item.Direccion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Clave)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="action-link">✏️ Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdUsuario" class="action-link">🔍 Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="action-link">🗑️ Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<KingdomRuMVC.Models.Carrito>
+
+@{
+    ViewData["Title"] = "Carrito";
+    var subtotal = 0m;
+}
+
+<h2>Tu Mochila</h2>
+
+@foreach (var item in Model)
+{
+    subtotal += item.Producto.Precio * item.Cantidad;
+    <div class="mochila-item">
+        <img src="@item.Producto.Imagen_Url" class="mochila-img" alt="@item.Producto.Nombre" />
+        <div>
+            <h3>@item.Producto.Nombre</h3>
+            <p>Precio: $@item.Producto.Precio</p>
+            <p>Cantidad: @item.Cantidad</p>
+            <p>Talla: @item.Talla</p>
+        </div>
+        <form asp-action="Eliminar" asp-route-id="@item.Id_Carrito" method="post">
+            <button type="submit">Quitar</button>
+        </form>
+    </div>
+}
+
+<h3>Total: $@subtotal</h3>

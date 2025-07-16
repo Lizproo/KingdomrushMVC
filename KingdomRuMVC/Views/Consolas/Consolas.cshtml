@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Kingdom Rush - Consolas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/modooscuro.css" />
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&amp;display=swap" rel="stylesheet" />
+}
+
+<div class="contenedor-principal">
+    <header>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>👑 Kingdom Rush</h1>
+        <p class="subtitulo">El mercado de los héroes digitales</p>
+        <button id="btn-modo-oscuro">🌙 Alternar Reino Oscuro</button>
+    </header>
+
+    <nav class="navbar">
+        <a asp-controller="Home" asp-action="Index">Inicio</a>
+        <div class="dropdown">
+            <a href="#" id="reliquiasBtn">🕹️ Reliquias Retro ▼</a>
+            <div class="dropdown-content" id="submenuReliquias">
+                <a asp-controller="Home" asp-action="Consolas">Consolas de Videojuegos</a>
+                <a href="/JuePS4-5">Juegos para PlayStation</a>
+                <a href="/JueXbox">Juegos para Xbox</a>
+                <a href="/Juenintendo">Juegos para Nintendo</a>
+                <a href="/JuePC">Juegos para PC</a>
+            </div>
+        </div>
+        <a href="/tunicas">🧥 Túnicas</a>
+        <a href="/accesorios">⚔️ Armamento</a>
+    </nav>
+
+    <main>
+        <section class="productos" id="contenedor-consolas">
+            <p style="text-align:center;">Cargando consolas desde la base de datos...</p>
+        </section>
+    </main>
+</div>
+
+@section Scripts {
+    <script src="~/js/modooscuro.js"></script>
+    <script src="~/js/carrito.js"></script>
+
+    <script>
+        async function cargarConsolas() {
+            const contenedor = document.getElementById("contenedor-consolas");
+            contenedor.innerHTML = "";
+
+            try {
+                const res = await fetch("/api/consolas");
+                const productos = await res.json();
+
+                if (productos.length === 0) {
+                    contenedor.innerHTML = "<p style='text-align:center;'>No hay consolas disponibles.</p>";
+                    return;
+                }
+
+                productos.forEach(producto => {
+                    if (producto.stock <= 0) return;
+
+                    const div = document.createElement("div");
+                    div.className = "producto";
+                    div.innerHTML = `
+                        <img src="${producto.imagen_url || '/images/placeholder.png'}" alt="${producto.nombre}" class="producto-img">
+                        <h3 class="producto-nombre">${producto.nombre}</h3>
+                        <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
+                        <div class="producto-opciones">
+                            <input type="number" min="1" max="${producto.stock}" value="1" class="cantidad-input" data-id="${producto.id}">
+                            <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', '${producto.nombre}', ${producto.precio}, '${producto.imagen_url}', ${producto.usa_talla})">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    `;
+                    contenedor.appendChild(div);
+                });
+            } catch (error) {
+                console.error("❌ Error al cargar consolas:", error);
+                contenedor.innerHTML = "<p style='text-align:center;'>Error al cargar productos.</p>";
+            }
+        }
+
+        function toggleMenu() {
+            const menuLateral = document.getElementById("menu-lateral");
+            if (window.innerWidth <= 768) {
+                menuLateral.classList.toggle("abierto");
+                document.addEventListener("click", function cerrarFuera(e) {
+                    if (
+                        menuLateral.classList.contains("abierto") &&
+                        !menuLateral.contains(e.target) &&
+                        !e.target.classList.contains("menu-toggle")
+                    ) {
+                        menuLateral.classList.remove("abierto");
+                        document.removeEventListener("click", cerrarFuera);
+                    }
+                });
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            cargarConsolas();
+        });
+    </script>
+}

@@ -1,0 +1,588 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+   
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Kingdom Rush</title>
+
+        <link rel="stylesheet" href="@Url.Content("~/css/style.css")" />
+        <link rel="stylesheet" href="@Url.Content("~/css/modooscuro.css")" />
+        <script src="@Url.Content("~/js/modooscuro.js")" defer></script>
+        <script src="@Url.Content("~/js/carrito.js")" defer></script>
+
+        <link rel="icon" href="https://em-content.zobj.net/source/microsoft-teams/363/crown_1f451.png" />
+        <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
+
+    <style>
+        .nav-derecha {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 16px;
+            font-family: 'MedievalSharp', cursive;
+            align-items: flex-start;
+        }
+
+        .btn-auth, .menu-usuario a {
+            background-color: #2e2e2e;
+            color: #ffd700;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid #d4af37;
+            font-family: 'MedievalSharp', cursive;
+            cursor: pointer;
+            height: 50px;
+        }
+
+            .btn-auth:hover, .usuario-logueado > button:hover, .menu-usuario a:hover {
+                background-color: #3d3d3d;
+                color: #ffffff;
+                box-shadow: 0 0 8px #d4af37;
+            }
+
+        .usuario-logueado {
+            display: flex; /* 🛠 Para alinear los botones logueados */
+            gap: 12px; /* 🛠 Separación entre ellos */
+            align-items: center;
+            position: relative;
+            height: 50px;
+        }
+
+            .usuario-logueado > button {
+                background-color: #2e2e2e;
+                color: #ffd700;
+                padding: 10px 15px;
+                font-weight: bold;
+                border-radius: 8px;
+                border: 2px solid #d4af37;
+                font-family: 'MedievalSharp', cursive;
+                cursor: pointer;
+                height: 50px;
+                white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+            }
+
+        .menu-usuario {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .usuario-logueado.open .menu-usuario {
+            display: block;
+        }
+
+        .menu-usuario a {
+            display: block;
+            padding: 8px 14px;
+            font-size: 15px;
+            background-color: #2e2e2e;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            margin-top: 6px;
+        }
+
+        a[href="carrito.html"].btn-auth {
+            width: 120px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        /* 🛠 CONTENEDOR PARA BOTONES CUANDO NO ESTÁ LOGUEADO */
+        .botones-no-log .btn-auth {
+            height: 25px;
+            padding: 8px 16px;
+            font-size: 15px;
+            min-width: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        /* 🛠 MODIFICACIÓN: Estilo para alinear los botones en fila */
+        .botones-no-log {
+            display: flex;
+            gap: 10px; /* Espacio entre botones */
+            align-items: center;
+            flex-wrap: wrap; /* Para que se ajusten en pantallas pequeñas */
+        }
+
+
+            .botones-no-log .btn-auth:hover {
+                background-color: #444;
+                color: white;
+                box-shadow: 0 0 6px #d4af37;
+            }
+        /* 🛠 Espaciado entre los botones cuando está logueado */
+        .usuario-logueado {
+            display: flex;
+            gap: 10px; /* ← aquí defines el espacio horizontal */
+            align-items: center;
+        }
+    </style>
+
+</head>
+<script src="modooscuro.js" defer></script>
+
+<body>
+    <!-- Menú lateral (para móviles) -->
+    <div id="menu-lateral" class="menu-lateral">
+        <button onclick="toggleMenu()" style="background:none; border:none; color:#ffd700; font-size:24px; float:right;">✖️</button>
+        <a href="/Home/index">🏰 Inicio</a>
+        <a href="/Home/Consolas">🕹️ Consolas</a>
+        <a href="/Home/JuePS45">🎮 Juegos PS4/5</a>
+        <a href="/Home/JueXbox">🎮 Juegos Xbox</a>
+        <a href="/Home/Juenintendo">🎮 Juegos Nintendo</a>
+        <a href="/Home/JuePC">🖥️ Juegos PC</a>
+        <a href="/Home/tunicas">🧥 Túnicas</a>
+        <a href="/Home/Accesorios">⚔️ Armamento</a>
+        <a href="/Usuarios/login">🔐 Iniciar sesión</a>
+        <a href="/Usuarios/Create">📝 Crear cuenta</a>
+        <a href="/Carrito/Mochila">🎒 Mochila</a>
+    </div>
+
+    <div id="auth-area" class="nav-derecha"></div>
+
+    <div class="contenedor-principal">
+        <header>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <h1>👑 Kingdom Rush</h1>
+            <p class="subtitulo">Ropa épica para héroes digitales</p>
+            <button id="btn-modo-oscuro">🌙 Alternar Reino Oscuro</button>
+
+        </header>
+
+        <nav class="navbar">
+            <a href="/Home/index">🏰 Inicio</a>
+            <div class="dropdown">
+                <a href="#" id="reliquiasBtn">🕹️ Reliquias Retro ▼</a>
+                <div class="dropdown-content" id="submenuReliquias">
+                    <a href="/Home/Consolas">Consolas de Videojuegos</a>
+                    <a href="/Home/JuePS45">Juegos para PlayStation</a>
+                    <a href="/Home/JueXbox">Juegos para Xbox</a>
+                    <a href="/Home/Juenintendo">Juegos para Nintendo</a>
+                    <a href="/Home/JuePC">Juegos para PC</a>
+                </div>
+            </div>
+            <a href="/Home/tunicas">🧥 Túnicas</a>
+            <a href="/Home/accesorios">⚔️ Armamento</a>
+        </nav>
+
+        <main>
+            <!-- Buscador -->
+            <div class="buscador-tunicas">
+                <input type="text" placeholder="🔍 Buscar túnica, capa, accesorio..." disabled />
+                <button disabled>Buscar</button>
+            </div>
+
+            <!-- Menú de categorías -->
+            <div class="tunicas-menu-categorias">
+                <a href="#camisetas">👕 Camisetas</a>
+                <a href="#gorras">🧢 Gorras</a>
+                <a href="#chaquetas">🧥 Chaquetas</a>
+                <a href="#accesorios">🧤 Accesorios</a>
+            </div>
+
+            <!-- Sección Camisetas -->
+            <section id="camisetas">
+                <h2 class="titulo-seccion">👕 Camisetas</h2>
+                <div class="productos">
+                    <div class="producto">
+                        <img src="images/tunicas/camiseta.png" alt="Camiseta Gamer Girl" class="producto-img">
+                        <h3 class="producto-nombre">Camiseta Girl Gamer</h3>
+                        <p class="producto-precio">$10.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/camiseta1.png" alt="Camiseta Mortal Combat" class="producto-img">
+                        <h3 class="producto-nombre">Camiseta Mortal Combat</h3>
+                        <p class="producto-precio">$15.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/camiseta2.png" alt="Camiseta Super Mario Bros" class="producto-img">
+                        <h3 class="producto-nombre">Camiseta Super Mario Bros</h3>
+                        <p class="producto-precio">$20.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/camiseta3.png" alt="Camiseta Fornite" class="producto-img">
+                        <h3 class="producto-nombre">Camiseta Fortnite</h3>
+                        <p class="producto-precio">$15.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Sección Chaquetas -->
+            <section id="chaquetas">
+                <h2 class="titulo-seccion">🧥 Chaquetas</h2>
+                <div class="productos">
+                    <div class="producto">
+                        <img src="images/tunicas/chaqueta.png" alt="Sudadera Élfica" class="producto-img">
+                        <h3 class="producto-nombre">Sudadera Free Fire</h3>
+                        <p class="producto-precio">$30.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+
+                    <div class="producto">
+                        <img src="images/tunicas/chaqueta1.png" alt="Chaleco de Combate Píxel" class="producto-img">
+                        <h3 class="producto-nombre">Chaqueta Princesa Peaches</h3>
+                        <p class="producto-precio">$38.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/chaqueta2.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Chaqueta Jean Pikachu</h3>
+                        <p class="producto-precio">$55.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/chaqueta3.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Chaqueta Call of Duty</h3>
+                        <p class="producto-precio">$85.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Gorras -->
+            <section id="gorras">
+                <h2 class="titulo-seccion">🧢 Gorras</h2>
+                <div class="productos">
+                    <div class="producto">
+                        <img src="images/tunicas/gorra.png" alt="Gorra Gamer Mística" class="producto-img">
+                        <h3 class="producto-nombre">Gorra Minecraft</h3>
+                        <p class="producto-precio">$18.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/gorra1.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Gorra Mario Bros</h3>
+                        <p class="producto-precio">$15.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/gorra2.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Gorra Fortnite</h3>
+                        <p class="producto-precio">$8.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/gorra3.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Gorra Call of Duty</h3>
+                        <p class="producto-precio">$10.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Accesorios -->
+            <section id="accesorios">
+                <h2 class="titulo-seccion">🧤 Accesorios</h2>
+                <div class="productos">
+                    <div class="producto">
+                        <img src="images/tunicas/accesorio.png" alt="Guantes del Héroe Fantasma" class="producto-img">
+                        <h3 class="producto-nombre">Guantes Call of Duty</h3>
+                        <p class="producto-precio">$18.00</p>
+                        <div class="producto-opciones">
+                            <div class="inputs-opciones">
+
+                                <select class="talla-select">
+                                    <option value="">Talla</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+
+                                <input type="number" min="1" value="1" class="cantidad-input">
+                            </div>
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/accesorio1.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Llavero Free Fire</h3>
+                        <p class="producto-precio">$5.00</p>
+                        <div class="producto-opciones">
+                            <input type="number" min="1" value="1" class="cantidad-input">
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/accesorio2.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Gafas Fortnite</h3>
+                        <p class="producto-precio">$9.00</p>
+                        <div class="producto-opciones">
+                            <input type="number" min="1" value="1" class="cantidad-input">
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                    <div class="producto">
+                        <img src="images/tunicas/accesorio3.png" alt="Camiseta Mago Supremo" class="producto-img">
+                        <h3 class="producto-nombre">Funko Pop Thanos</h3>
+                        <p class="producto-precio">$55.00</p>
+                        <div class="producto-opciones">
+                            <input type="number" min="1" value="1" class="cantidad-input">
+                            <button class="boton-carrito">Agregar al carrito</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="carrito.js"></script>
+    <script>
+        function cargarAuthUI() {
+          const authDiv = document.getElementById("auth-area");
+          const usuario = localStorage.getItem("usuarioLogueado");
+          authDiv.innerHTML = "";
+
+          if (usuario) {
+            const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
+            const nombre = usuarios[usuario]?.nombre || "Usuario";
+
+            // 🛠 Contenedor flex para botones del usuario autenticado
+            authDiv.innerHTML = `
+              <div class="usuario-logueado" id="usuarioBox">
+                <button onclick="toggleUsuarioMenu()">👤 ${nombre} ▼</button>
+                <a href="/Carrito/Mochila" class="btn-auth">🎒 Mochila (<span id="cart-count">0</span>)</a>
+                <div class="menu-usuario" id="menuUsuario">
+                  <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+                </div>
+              </div>
+            `;
+          } else {
+            // 🛠 Contenedor especial para no logueado con botones alineados horizontalmente
+            authDiv.innerHTML = `
+              <div class="botones-no-log">
+                <a href="/Usuarios/login" class="btn-auth">🔐 Iniciar Sesión</a>
+                <a href="/Usuarios/Create" class="btn-auth">📝 Registrarse</a>
+                <a href="/Carrito/Mochila" class="btn-auth">🎒 Mochila (<span id="cart-count">0</span>)</a>
+              </div>
+            `;
+          }
+
+          const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+          const contador = document.getElementById("cart-count");
+          if (contador) {
+            contador.textContent = carrito.length;
+          }
+        }
+
+        function toggleUsuarioMenu() {
+          document.getElementById("usuarioBox").classList.toggle("open");
+        }
+
+        function cerrarSesion() {
+          localStorage.removeItem("usuarioLogueado");
+          location.reload();
+        }
+
+        window.onload = cargarAuthUI;
+    </script>
+    <script>
+        function toggleMenu() {
+          const menuLateral = document.getElementById("menu-lateral");
+
+          if (window.innerWidth <= 768) {
+            menuLateral.classList.toggle("abierto");
+
+            document.addEventListener("click", function cerrarFuera(e) {
+              if (
+                menuLateral.classList.contains("abierto") &&
+                !menuLateral.contains(e.target) &&
+                !e.target.classList.contains("menu-toggle")
+              ) {
+                menuLateral.classList.remove("abierto");
+                document.removeEventListener("click", cerrarFuera);
+              }
+            });
+          }
+        }
+    </script>
+
+
+
+</body>
+</html>

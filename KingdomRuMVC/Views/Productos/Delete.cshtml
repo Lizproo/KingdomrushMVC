@@ -1,0 +1,130 @@
+﻿@model KingdomRuMVC.Models.Producto
+
+@{
+    ViewData["Title"] = "Eliminar Producto";
+}
+
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        padding: 30px;
+    }
+
+    h1, h3, h4 {
+        color: #ffd700;
+        letter-spacing: 1px;
+    }
+
+    hr {
+        border-top: 1px solid #ffd700;
+    }
+
+    .delete-container {
+        background: #222;
+        border-radius: 10px;
+        padding: 30px 25px 20px 25px;
+        box-shadow: 0 2px 8px #0005;
+        max-width: 520px;
+        margin: 0 auto 30px auto;
+    }
+
+    dl.row {
+        margin-bottom: 18px;
+    }
+
+    dt, dd {
+        color: #fff;
+        font-size: 1.05em;
+    }
+
+    dt {
+        color: #ffd700;
+        font-weight: bold;
+    }
+
+    .btn-eliminar {
+        background-color: #ff6b6b;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 22px;
+        margin-right: 10px;
+        transition: background 0.2s;
+    }
+
+        .btn-eliminar:hover {
+            background-color: #ff3b3b;
+            color: #fff;
+        }
+
+    .back-link {
+        color: #ffd700;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 20px;
+        display: inline-block;
+        transition: color 0.2s;
+    }
+
+        .back-link:hover {
+            color: #fff;
+            text-shadow: 0 0 5px #ffd700;
+        }
+</style>
+
+<h1>🗑️ Eliminar Producto</h1>
+
+<div class="delete-container">
+    <h3>¿Estás seguro que deseas eliminar este producto?</h3>
+    <div>
+        <h4>Producto</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Nombre)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Nombre)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Precio)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Precio)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Imagen_Url)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Imagen_Url)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Categoria)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Categoria)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Usa_Talla)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Usa_Talla)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Stock)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Stock)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Eliminar" class="btn-eliminar" />
+            <a asp-action="Index" class="back-link">← Volver al listado</a>
+        </form>
+    </div>
+</div>

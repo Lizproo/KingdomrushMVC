@@ -1,0 +1,240 @@
+﻿@model List<KingdomRuMVC.Models.Carrito>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // O null si no usas layout aún
+    ViewData["Title"] = "Mochila";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mochila - Kingdom Rush</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/modooscuro.css" />
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fce97b;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin: 30px;
+        }
+
+        .mochila-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: rgba(51, 51, 51, 0.9);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+
+        .mochila-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #222;
+        }
+
+        .mochila-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn {
+            background-color: #d4af37;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+            .btn:hover {
+                background-color: #fce97b;
+            }
+
+        .eliminar-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        #total {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+
+
+        .mochila-img {
+            width: 80%;
+            max-width: 200px;
+        }
+
+        .mochila-info {
+            width: 100%;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <h1>🎒 Mochila</h1>
+    <div id="mochila-contenido"></div>
+    <div id="total"></div>
+    <div style="text-align:center;">
+        <a href="/Home/Index" class="btn">⬅ Volver al inicio</a>
+    </div>
+
+   @*  @if (Model != null && Model.Count > 0)
+    {
+        decimal subtotal = 0;
+
+        foreach (var item in Model)
+        {
+            subtotal += item.Producto.Precio * item.Cantidad;
+            <div class="mochila-item">
+                <img src="@item.Producto.Imagen_Url" class="mochila-img" alt="@item.Producto.Nombre" />
+                <div class="mochila-info">
+                    <h3>@item.Producto.Nombre</h3>
+                    <p>Precio: $@item.Producto.Precio.ToString("F2")</p>
+                    <p>Cantidad: @item.Cantidad</p>
+                    <p>Talla: @item.Talla</p>
+                </div>
+                <form asp-action="Eliminar" asp-route-id="@item.Id_Carrito" method="post">
+                    <button class="btn eliminar-btn" type="submit">❌ Quitar</button>
+                </form>
+            </div>
+        }
+
+        var iva = subtotal * 0.15m;
+        var total = subtotal + iva;
+
+        <div id="total">
+            <p><strong>Subtotal:</strong> $@subtotal.ToString("F2")</p>
+            <p><strong>IVA (15%):</strong> $@iva.ToString("F2")</p>
+            <p><strong>Total a pagar:</strong> $@total.ToString("F2")</p>
+            <form asp-action="Comprar" method="post">
+                <button type="submit" class="btn">✅ Comprar</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <p style="text-align:center;">Tu mochila está vacía.</p>
+    } *@
+
+   @*  <div style="text-align:center;">
+        <a href="/Home/Index" class="btn">⬅ Volver al inicio</a>
+    </div> *@
+    <script>
+        function renderMochila() {
+            const mochila = JSON.parse(localStorage.getItem('carrito') || '[]');
+            const contenedor = document.getElementById('mochila-contenido');
+            const totalDiv = document.getElementById('total');
+            contenedor.innerHTML = '';
+            totalDiv.innerHTML = '';
+
+            if (mochila.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center;">Tu mochila está vacía.</p>';
+                return;
+            }
+
+            let subtotal = 0;
+            mochila.forEach((item, idx) => {
+                subtotal += item.precio_unitario * item.cantidad;
+                contenedor.innerHTML += `
+                    <div class="mochila-item">
+                        <img src="${item.imagen_url}" class="mochila-img" alt="${item.nombre}" />
+                        <div class="mochila-info">
+                            <h3>${item.nombre}</h3>
+                            <p>Precio: $${item.precio_unitario.toFixed(2)}</p>
+                            <p>Cantidad: ${item.cantidad}</p>
+                            <p>Talla: ${item.talla}</p>
+                        </div>
+                        <button class="btn eliminar-btn" onclick="eliminarDelCarrito(${idx})">❌ Quitar</button>
+                    </div>
+                `;
+            });
+
+            const iva = subtotal * 0.15;
+            const total = subtotal + iva;
+
+            totalDiv.innerHTML = `
+                <p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>
+                <p><strong>IVA (15%):</strong> $${iva.toFixed(2)}</p>
+                <p><strong>Total a pagar:</strong> $${total.toFixed(2)}</p>
+                <button class="btn" onclick="comprar()">✅ Comprar</button>
+            `;
+        }
+
+        function eliminarDelCarrito(idx) {
+            let mochila = JSON.parse(localStorage.getItem('carrito') || '[]');
+            mochila.splice(idx, 1);
+            localStorage.setItem('carrito', JSON.stringify(mochila));
+            renderMochila();
+        }
+
+                function comprar() {
+            const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+            const idUsuario = localStorage.getItem('idUsuario');
+            if (!idUsuario) {
+                alert('Debes iniciar sesión para comprar.');
+                return;
+            }
+            if (carrito.length === 0) {
+                alert('Tu mochila está vacía.');
+                return;
+            }
+
+            // Mapeo de propiedades para que coincidan con lo que espera el backend
+            const productos = carrito.map(item => ({
+                Id_Producto: item.id_producto,
+                Nombre: item.nombre,
+                Precio_Unitario: item.precio_unitario,
+                Imagen_Url: item.imagen_url,
+                Talla: item.talla,
+                Cantidad: item.cantidad
+            }));
+
+            fetch('/Facturas/Comprar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idUsuario: idUsuario,
+                    productos: productos
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('carrito');
+                    alert('¡Compra realizada con éxito!');
+                    renderMochila();
+                } else {
+                    alert('Error al procesar la compra.');
+                }
+            })
+            .catch(() => alert('Error de conexión al procesar la compra.'));
+        }
+
+        document.addEventListener('DOMContentLoaded', renderMochila);
+    </script>
+</body>
+</html>
