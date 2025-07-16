@@ -1,49 +1,49 @@
 ﻿@model KingdomRuMVC.Models.DetalleFactura
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Detalle";
 }
 
-<h1>Edit</h1>
+<div style="max-width: 700px; margin: 40px auto; background-color: #fff; border-radius: 15px; padding: 30px; box-shadow: 0 0 15px rgba(0,0,0,0.6); font-family: 'Segoe UI', sans-serif;">
+    <h2 style="color: #ffd700; font-weight: bold; margin-bottom: 20px;">✏️ Editar Detalle de Factura</h2>
 
-<h4>DetalleFactura</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id_Factura" />
-            <div class="form-group">
-                <label asp-for="Id_Producto" class="control-label"></label>
-                <input asp-for="Id_Producto" class="form-control" />
-                <span asp-validation-for="Id_Producto" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Precio_Unitario" class="control-label"></label>
-                <input asp-for="Precio_Unitario" class="form-control" />
-                <span asp-validation-for="Precio_Unitario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado_Detalle" class="control-label"></label>
-                <input asp-for="Estado_Detalle" class="form-control" />
-                <span asp-validation-for="Estado_Detalle" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id_Factura" />
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group mb-3">
+            <label asp-for="Id_Producto" class="form-label fw-bold">🧱 ID del Producto</label>
+            <input asp-for="Id_Producto" class="form-control" />
+            <span asp-validation-for="Id_Producto" class="text-danger"></span>
+        </div>
+
+        <div class="form-sgroup mb-3">
+            <label asp-for="Cantidad" class="form-label fw-bold">📦 Cantidad</label>
+            <input asp-for="Cantidad" class="form-control" />
+            <span asp-validation-for="Cantidad" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Precio_Unitario" class="form-label fw-bold">💰 Precio Unitario</label>
+            <input asp-for="Precio_Unitario" class="form-control" />
+            <span asp-validation-for="Precio_Unitario" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Estado_Detalle" class="form-label fw-bold">📌 Estado</label>
+            <input asp-for="Estado_Detalle" class="form-control" />
+            <span asp-validation-for="Estado_Detalle" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <input type="submit" value="💾 Guardar Cambios" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-secondary">🔙 Cancelar</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

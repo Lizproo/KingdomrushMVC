@@ -1,42 +1,37 @@
 ﻿@model KingdomRuMVC.Models.DetalleFactura
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle de Factura";
 }
 
-<h1>Details</h1>
+<div style="max-width: 700px; margin: 40px auto; background-color: #ffffff; border-radius: 15px; padding: 30px; box-shadow: 0 0 15px rgba(0,0,0,0.6); font-family: 'Segoe UI', sans-serif;">
+    <h2 style="color: #ffd700; font-weight: bold; margin-bottom: 20px;">🧾 Factura N° @Model.Id_Factura</h2>
 
-<div>
-    <h4>DetalleFactura</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id_Producto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id_Producto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cantidad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cantidad)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio_Unitario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio_Unitario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado_Detalle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado_Detalle)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id_Factura">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+            <tr style="background-color: #2c2c2c; color: #ffd700;">
+                <th style="padding: 12px; text-align: left;">🧱 Producto</th>
+                <th style="padding: 12px; text-align: center;">📦 Cantidad</th>
+                <th style="padding: 12px; text-align: right;">💰 Precio Unitario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #f4f4f4;">
+                <td style="padding: 12px;">@Model.Id_Producto</td>
+                <td style="padding: 12px; text-align: center;">@Model.Cantidad</td>
+                <td style="padding: 12px; text-align: right;">$@Model.Precio_Unitario.ToString("N2")</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align: right; font-size: 1.2em; font-weight: bold; margin-top: 10px;">
+        Total: $@(Model.Cantidad * Model.Precio_Unitario)
+    </div>
+
+    <p style="margin-top: 20px;"><strong>🧾 Estado del Detalle:</strong> @Model.Estado_Detalle</p>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a asp-action="Edit" asp-route-id="@Model.Id_Factura" class="btn btn-warning" style="margin-right: 10px;">✏️ Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">🔙 Volver</a>
+    </div>
 </div>

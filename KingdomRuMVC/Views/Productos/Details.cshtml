@@ -1,54 +1,34 @@
 ﻿@model KingdomRuMVC.Models.Producto
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Producto";
 }
 
-<h1>Details</h1>
+<div style="max-width: 700px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif;">
+    <h2 class="text-center mb-4">📦 Detalles del Producto</h2>
 
-<div>
-    <h4>Producto</h4>
-    <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagen_Url)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Imagen_Url)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Usa_Talla)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Usa_Talla)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock)
-        </dd>
+        <dt class="col-sm-4">📛 Nombre</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+
+        <dt class="col-sm-4">💲 Precio</dt>
+        <dd class="col-sm-8">$@Model.Precio.ToString("F2")</dd>
+
+        <dt class="col-sm-4">🖼️ Imagen URL</dt>
+        <dd class="col-sm-8">@Model.Imagen_Url</dd>
+
+        <dt class="col-sm-4">🏷️ Categoría</dt>
+        <dd class="col-sm-8">@Model.Categoria</dd>
+
+        <dt class="col-sm-4">📐 Usa Talla</dt>
+        <dd class="col-sm-8">@((Model.Usa_Talla ?? false) ? "Sí" : "No")</dd>
+
+        <dt class="col-sm-4">📦 Stock</dt>
+        <dd class="col-sm-8">@Model.Stock</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="text-center mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">✏️ Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">🔙 Volver</a>
+    </div>
 </div>
