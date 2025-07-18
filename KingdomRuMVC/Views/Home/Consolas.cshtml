@@ -147,12 +147,25 @@
                              <img src="${imagenUrl}" alt="${producto.nombre}" class="producto-img">
                             <h3 class="producto-nombre">${producto.nombre}</h3>
                             <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
+
+                             <!-- Nick -->
                             <div class="producto-opciones">
-                                <input type="number" min="1" max="${producto.stock}" value="1" class="cantidad-input" data-id="${producto.id}">
-                                <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', \`${producto.nombre}\`, ${producto.precio}, '${imagenUrl}', ${producto.usa_talla})">
-                                    Agregar al carrito
-                                </button>
+                                     <input
+        type="number"
+        min="1"
+        max="${producto.stock}"
+        value="1"
+        class="cantidad-input"
+        data-id="${producto.id}"
+        onkeydown="return false;">
+
+
+                                      <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', \`${producto.nombre}\`, ${producto.precio}, '${imagenUrl}', ${producto.usa_talla}, ${producto.stock})">
+
+                                         Agregar al carrito
+                                         </button>
                             </div>
+                            <!-- Nick -->
                         `;
                         contenedor.appendChild(div);
                     });
@@ -167,6 +180,48 @@
             cargarAuthUI();
             cargarConsolas();
         });
+
+        function agregarAlCarrito(id_producto, nombre, precio_unitario, imagen_url, usa_talla, stockDisponible) {
+    const usuario = localStorage.getItem('usuarioLogueado');
+    if (!usuario) {
+        alert("Debes iniciar sesión para agregar a la mochila.");
+        window.location.href = "/Usuarios/Login";
+        return;
+    }
+
+    const talla = "Única"; // Porque siempre es falso según lo que dijiste
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    const index = carrito.findIndex(item => item.id_producto == id_producto && item.talla === talla);
+
+    if (index !== -1) {
+        const nuevaCantidad = carrito[index].cantidad + 1;
+        if (nuevaCantidad > stockDisponible) {
+            alert(`Solo hay ${stockDisponible} disponibles en stock.`);
+            return;
+        }
+        carrito[index].cantidad = nuevaCantidad;
+    } else {
+        carrito.push({
+    id_producto,
+    nombre,
+    precio_unitario,
+    imagen_url,
+    talla,
+    cantidad: 1,
+    stockDisponible  // 🔥 esta línea es CLAVE
+});
+
+    }
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert(`${nombre} agregado a la mochila 🛒`);
+
+    // Opcional: actualizar contador
+    const contador = document.getElementById("cart-count");
+    if (contador) contador.textContent = carrito.length;
+}
+
     </script>
 </body>
 </html>

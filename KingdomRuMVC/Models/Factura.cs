@@ -14,10 +14,14 @@ namespace KingdomRuMVC.Models
 
         public decimal? Subtotal { get; set; }
 
+
         public int? Iva { get; set; }
 
         public decimal? Total { get; set; }
 
         public string Estado { get; set; }
+        public virtual ICollection<DetalleFactura> Detalles { get; set; }
+
+
     }
 }

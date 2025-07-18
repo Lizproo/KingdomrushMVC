@@ -26,22 +26,24 @@ namespace KingdomRuMVC.Controllers
         }
 
         // GET: Facturas/Details/5
+        // GET: Facturas/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var factura = await _context.Facturas
+                .Include(f => f.Detalles)
+                    .ThenInclude(d => d.Producto)
                 .FirstOrDefaultAsync(m => m.Id_Factura == id);
+
             if (factura == null)
-            {
                 return NotFound();
-            }
 
             return View(factura);
         }
+
+
 
         // GET: Facturas/Create
         public IActionResult Create()

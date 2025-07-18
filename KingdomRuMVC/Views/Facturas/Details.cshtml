@@ -2,33 +2,133 @@
 
 @{
     ViewData["Title"] = "Detalle de Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div style="max-width: 700px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif;">
-    <h2 class="text-center mb-4" style="color: #f1c40f;">🧾 Factura N° @Model.Id_Factura</h2>
+<style>
+    .factura-container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    <dl class="row">
-        <dt class="col-sm-4">🧑 Usuario</dt>
-        <dd class="col-sm-8">@Model.Id_Usuario</dd>
+    .factura-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-        <dt class="col-sm-4">📅 Fecha</dt>
-        <dd class="col-sm-8">@Model.Fecha?.ToString("dd/MM/yyyy HH:mm")</dd>
+        .factura-header h2 {
+            margin-bottom: 5px;
+            color: #2a2a2a;
+        }
 
-        <dt class="col-sm-4">💵 Subtotal</dt>
-        <dd class="col-sm-8">$@Model.Subtotal?.ToString("F2")</dd>
+    .factura-datos dt {
+        font-weight: bold;
+    }
 
-        <dt class="col-sm-4">🧾 IVA</dt>
-        <dd class="col-sm-8">$@Model.Iva?.ToString("F2")</dd>
+    .factura-datos dd {
+        margin-bottom: 10px;
+    }
 
-        <dt class="col-sm-4">💰 Total</dt>
-        <dd class="col-sm-8">$@Model.Total?.ToString("F2")</dd>
+    .factura-detalles table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
 
-        <dt class="col-sm-4">📌 Estado</dt>
-        <dd class="col-sm-8">@Model.Estado</dd>
-    </dl>
+    .factura-detalles th, .factura-detalles td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
 
-    <div class="text-center mt-4">
-        <a asp-action="Edit" asp-route-id="@Model.Id_Factura" class="btn btn-primary">✏️ Editar</a>
-        <a asp-action="Index" class="btn btn-secondary ms-2">🔙 Volver</a>
+    .factura-detalles th {
+        background-color: #f2f2f2;
+    }
+
+    .total {
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .btn-volver {
+        display: block;
+        margin-top: 30px;
+        text-align: center;
+    }
+</style>
+
+<div class="factura-container">
+    <div class="factura-header">
+        <h2>Factura Nº @Model.Id_Factura</h2>
+        <p><strong>Fecha:</strong> @Model.Fecha?.ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+
+    <div class="factura-datos">
+        <dl class="row">
+            <dt class="col-sm-4">Cliente:</dt>
+            <dd class="col-sm-8">@Model.Id_Usuario</dd>
+
+            <dt class="col-sm-4">Subtotal:</dt>
+            <dd class="col-sm-8">@(Model.Subtotal?.ToString("N2") ?? "0.00")</dd>
+
+            <dt class="col-sm-4">IVA (15%):</dt>
+            <dd class="col-sm-8">@(Model.Iva?.ToString("N2") ?? "0.00")</dd>
+
+            <dt class="col-sm-4">Total:</dt>
+            <dd class="col-sm-8">@(Model.Total?.ToString("N2") ?? "0.00")</dd>
+
+            <dt class="col-sm-4">Estado:</dt>
+            <dd class="col-sm-8">@Model.Estado</dd>
+        </dl>
+    </div>
+
+    <div class="factura-detalles">
+        <h4>Detalle de Productos</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Detalles != null && Model.Detalles.Any())
+                {
+                    foreach (var item in Model.Detalles)
+                    {
+                        <tr>
+                            <td>@item.Producto?.Nombre</td>
+                            <td>@item.Cantidad</td>
+                            <td>$@item.Precio_Unitario.ToString("N2")</td>
+                            <td>$@(item.Precio_Unitario * item.Cantidad).ToString("N2")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">No hay productos en esta factura.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="total">
+        Total a pagar: $@(Model.Total?.ToString("N2") ?? "0.00")
+    </div>
+
+    <div class="btn-volver">
+        <a href="@Url.Action("Index", "Facturas")" class="btn btn-secondary">Volver</a>
     </div>
 </div>

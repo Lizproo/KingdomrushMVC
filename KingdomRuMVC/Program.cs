@@ -8,7 +8,7 @@ builder.Services.AddDbContext<KingdomDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDistributedMemoryCache(); // necesario
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

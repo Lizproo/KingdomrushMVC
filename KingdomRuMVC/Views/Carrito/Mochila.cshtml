@@ -144,51 +144,81 @@
     </div> *@
     <script>
         function renderMochila() {
-            const mochila = JSON.parse(localStorage.getItem('carrito') || '[]');
-            const contenedor = document.getElementById('mochila-contenido');
-            const totalDiv = document.getElementById('total');
-            contenedor.innerHTML = '';
-            totalDiv.innerHTML = '';
+    const original = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-            if (mochila.length === 0) {
-                contenedor.innerHTML = '<p style="text-align:center;">Tu mochila está vacía.</p>';
-                return;
-            }
-
-            let subtotal = 0;
-            mochila.forEach((item, idx) => {
-                subtotal += item.precio_unitario * item.cantidad;
-                contenedor.innerHTML += `
-                    <div class="mochila-item">
-                        <img src="${item.imagen_url}" class="mochila-img" alt="${item.nombre}" />
-                        <div class="mochila-info">
-                            <h3>${item.nombre}</h3>
-                            <p>Precio: $${item.precio_unitario.toFixed(2)}</p>
-                            <p>Cantidad: ${item.cantidad}</p>
-                            <p>Talla: ${item.talla}</p>
-                        </div>
-                        <button class="btn eliminar-btn" onclick="eliminarDelCarrito(${idx})">❌ Quitar</button>
-                    </div>
-                `;
-            });
-
-            const iva = subtotal * 0.15;
-            const total = subtotal + iva;
-
-            totalDiv.innerHTML = `
-                <p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>
-                <p><strong>IVA (15%):</strong> $${iva.toFixed(2)}</p>
-                <p><strong>Total a pagar:</strong> $${total.toFixed(2)}</p>
-                <button class="btn" onclick="comprar()">✅ Comprar</button>
-            `;
+    // 🔄 Agrupar productos por id + talla
+    const mochilaMap = {};
+    original.forEach(item => {
+        const key = `${item.id_producto}_${item.talla || 'única'}`;
+        if (mochilaMap[key]) {
+            mochilaMap[key].cantidad += item.cantidad;
+        } else {
+            mochilaMap[key] = { ...item };
         }
+    });
 
-        function eliminarDelCarrito(idx) {
-            let mochila = JSON.parse(localStorage.getItem('carrito') || '[]');
-            mochila.splice(idx, 1);
-            localStorage.setItem('carrito', JSON.stringify(mochila));
-            renderMochila();
-        }
+    // ⚠️ Reescribimos el localStorage corregido
+    const mochila = Object.values(mochilaMap);
+
+    const contenedor = document.getElementById('mochila-contenido');
+    const totalDiv = document.getElementById('total');
+    contenedor.innerHTML = '';
+    totalDiv.innerHTML = '';
+
+    if (mochila.length === 0) {
+        contenedor.innerHTML = '<p style="text-align:center;">Tu mochila está vacía.</p>';
+        return;
+    }
+
+    let subtotal = 0;
+
+    mochila.forEach((item, idx) => {
+        // 🔒 Limitar cantidad si excede el stock
+        const stock = item.stockDisponible || 1; // fallback para evitar undefined
+
+if (item.cantidad > stock) {
+    item.cantidad = stock;
+    alert(`⚠️ ${item.nombre}: solo hay ${stock} en stock. Se ajustó la cantidad.`);
+}
+
+
+        subtotal += item.precio_unitario * item.cantidad;
+
+        contenedor.innerHTML += `
+            <div class="mochila-item">
+                <img src="${item.imagen_url}" class="mochila-img" alt="${item.nombre}" />
+                <div class="mochila-info">
+                    <h3>${item.nombre}</h3>
+                    <p>Precio: $${item.precio_unitario.toFixed(2)}</p>
+                    <p>Cantidad: ${item.cantidad}</p>
+                </div>
+                <button class="btn eliminar-btn" onclick="eliminarDelCarrito('${item.id_producto}', '${item.talla}')">❌ Quitar</button>
+            </div>
+        `;
+    });
+
+    // 📝 Guardamos la mochila corregida en localStorage
+    localStorage.setItem('carrito', JSON.stringify(mochila));
+
+    const iva = subtotal * 0.15;
+    const total = subtotal + iva;
+
+    totalDiv.innerHTML = `
+        <p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>
+        <p><strong>IVA (15%):</strong> $${iva.toFixed(2)}</p>
+        <p><strong>Total a pagar:</strong> $${total.toFixed(2)}</p>
+        <button class="btn" onclick="comprar()">✅ Comprar</button>
+    `;
+}
+
+
+        function eliminarDelCarrito(id, talla) {
+    let mochila = JSON.parse(localStorage.getItem('carrito') || '[]');
+    mochila = mochila.filter(item => !(item.id_producto == id && item.talla === talla));
+    localStorage.setItem('carrito', JSON.stringify(mochila));
+    renderMochila();
+}
+
 
                 function comprar() {
             const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
@@ -235,6 +265,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', renderMochila);
+        
+        
+
     </script>
 </body>
 </html>

@@ -1,6 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
 }
+@if (Context.Session.GetString("usuarioLogueado") != null)
+{
+    <a href="/Usuarios/Logout">🔓 Cerrar sesión</a>
+}
+
 
 <!-- Menú lateral -->
 <div id="menu-lateral" class="menu-lateral">

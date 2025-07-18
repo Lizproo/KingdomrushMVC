@@ -4,31 +4,85 @@
     ViewData["Title"] = "Detalles del Producto";
 }
 
-<div style="max-width: 700px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif;">
-    <h2 class="text-center mb-4">📦 Detalles del Producto</h2>
+<style>
+    .producto-detalles-container {
+        max-width: 700px;
+        margin: 60px auto;
+        background: #fdfdfd;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-    <dl class="row">
-        <dt class="col-sm-4">📛 Nombre</dt>
-        <dd class="col-sm-8">@Model.Nombre</dd>
+        .producto-detalles-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #4b0082;
+        }
 
-        <dt class="col-sm-4">💲 Precio</dt>
-        <dd class="col-sm-8">$@Model.Precio.ToString("F2")</dd>
+    .producto-tabla {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-        <dt class="col-sm-4">🖼️ Imagen URL</dt>
-        <dd class="col-sm-8">@Model.Imagen_Url</dd>
+        .producto-tabla td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
 
-        <dt class="col-sm-4">🏷️ Categoría</dt>
-        <dd class="col-sm-8">@Model.Categoria</dd>
+            .producto-tabla td:first-child {
+                font-weight: bold;
+                width: 40%;
+                color: #333;
+            }
 
-        <dt class="col-sm-4">📐 Usa Talla</dt>
-        <dd class="col-sm-8">@((Model.Usa_Talla ?? false) ? "Sí" : "No")</dd>
+            .producto-tabla td:last-child {
+                color: #555;
+            }
 
-        <dt class="col-sm-4">📦 Stock</dt>
-        <dd class="col-sm-8">@Model.Stock</dd>
-    </dl>
+    .btn-group {
+        text-align: center;
+        margin-top: 25px;
+    }
 
-    <div class="text-center mt-4">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">✏️ Editar</a>
+        .btn-group a {
+            margin: 0 8px;
+        }
+</style>
+
+<div class="producto-detalles-container">
+    <h2>📦 Detalles del Producto</h2>
+
+    <table class="producto-tabla">
+        <tr>
+            <td>📛 Nombre</td>
+            <td>@Model.Nombre</td>
+        </tr>
+        <tr>
+            <td>💲 Precio</td>
+            <td>$@Model.Precio.ToString("F2")</td>
+        </tr>
+        <tr>
+            <td>🖼️ Imagen URL</td>
+            <td>@Model.Imagen_Url</td>
+        </tr>
+        <tr>
+            <td>🏷️ Categoría</td>
+            <td>@Model.Categoria</td>
+        </tr>
+        <tr>
+            <td>📐 Usa Talla</td>
+            <td>@((Model.Usa_Talla ?? false) ? "Sí" : "No")</td>
+        </tr>
+        <tr>
+            <td>📦 Stock</td>
+            <td>@Model.Stock</td>
+        </tr>
+    </table>
+
+    <div class="btn-group">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
         <a asp-action="Index" class="btn btn-secondary">🔙 Volver</a>
     </div>
 </div>

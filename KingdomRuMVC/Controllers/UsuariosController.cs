@@ -57,9 +57,9 @@ namespace KingdomRuMVC.Controllers
         public async Task<IActionResult> Create([Bind("Nombre,Apellido,Edad,Correo,Telefono,Direccion,Clave")] Usuario usuario)
         {
             usuario.IdUsuario = Guid.NewGuid().ToString("N").Substring(0, 7).ToUpper();
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Login","Usuarios");
+            _context.Add(usuario);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Login", "Usuarios");
         }
 
 
@@ -158,41 +158,67 @@ namespace KingdomRuMVC.Controllers
         // POST: Usuarios/Login
         // POST: Usuarios/Login
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Correo == model.Correo && u.Clave == model.Clave);
+                .FirstOrDefaultAsync(u => u.Correo == model.Correo);
 
+            if (usuario == null || usuario.Clave != model.Clave)
 
-
-            if (usuario == null)
             {
                 ViewBag.LoginError = "Correo o contraseña incorrectos.";
                 return View(model);
             }
 
+            // ✅ Guardar sesión
             HttpContext.Session.SetString("usuarioLogueado", usuario.Nombre);
+            HttpContext.Session.SetString("idUsuario", usuario.IdUsuario);
+            HttpContext.Session.SetString("rol", usuario.Correo == "admin@admin.com" ? "Admin" : "Cliente");
+
+            // ✅ Redirigir correctamente según rol
             if (usuario.Correo == "admin@admin.com")
             {
-                // Si el usuario es admin, redirigir a la página de administración
                 return RedirectToAction("Panel", "Admin");
             }
-            // Pasar también el IdUsuario a la vista
+
+            // ✅ Usuario normal
             ViewBag.UsuarioLogueado = usuario.Nombre;
             ViewBag.IdUsuario = usuario.IdUsuario;
             return View("LoginSuccess");
         }
 
 
+
         private bool UsuarioExists(string id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
+        }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // Cierra sesión y borra todos los datos
+            return RedirectToAction("Login", "Usuarios");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registrar(Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+                return View(usuario);
+
+            // Cifrar contraseña
+            usuario.Clave = BCrypt.Net.BCrypt.HashPassword(usuario.Clave);
+
+            _context.Add(usuario);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Login");
         }
 
 
 
     }
 }
+

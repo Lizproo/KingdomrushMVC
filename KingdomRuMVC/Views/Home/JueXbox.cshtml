@@ -210,12 +210,22 @@
                         <img src="${imagenUrl}" alt="${producto.nombre}" class="producto-img">
                         <h3 class="producto-nombre">${producto.nombre}</h3>
                         <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
-                        <div class="producto-opciones">
-                            <input type="number" min="1" max="${producto.stock}" value="1" class="cantidad-input" data-id="${producto.id}">
-                            <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', \`${producto.nombre}\`, ${producto.precio}, '${producto.imagen_url}', ${producto.usa_talla})">
-                                Agregar al carrito
-                            </button>
-                        </div>
+                               <!-- Nick -->
+        <div class="producto-opciones">
+           <div class="producto-opciones">
+                                     <input
+        type="number"
+        min="1"
+        max="${producto.stock}"
+        value="1"
+        class="cantidad-input"
+        data-id="${producto.id}"
+        onkeydown="return false;">
+            <button class="boton-carrito" onclick="agregarAlCarrito('${producto.id}', \`${producto.nombre}\`, ${producto.precio}, '${imagenUrl}', ${producto.usa_talla})">
+                Agregar al carrito
+            </button>
+        </div>
+                        <!-- Nick -->
                     `;
                     contenedor.appendChild(div);
                 });

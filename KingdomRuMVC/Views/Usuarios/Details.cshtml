@@ -1,0 +1,86 @@
+﻿
+@model KingdomRuMVC.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<style>
+    .usuario-detalles-container {
+        max-width: 700px;
+        margin: 60px auto;
+        background: #fdfdfd;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .usuario-detalles-container h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #4b0082;
+    }
+
+    .usuario-tabla {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .usuario-tabla td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .usuario-tabla td:first-child {
+        font-weight: bold;
+        width: 40%;
+        color: #333;
+    }
+
+    .usuario-tabla td:last-child {
+        color: #555;
+    }
+
+    .btn-group {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .btn-group a {
+        margin: 0 8px;
+    }
+</style>
+
+<div class="usuario-detalles-container">
+    <h2>👤 Detalles del Usuario</h2>
+
+    <table class="usuario-tabla">
+        <tr>
+            <td>🪪 ID</td>
+            <td>@Model.IdUsuario</td>
+        </tr>
+        <tr>
+            <td>📛 Nombre</td>
+            <td>@Model.Nombre</td>
+        </tr>
+        <tr>
+            <td>📧 Correo</td>
+            <td>@Model.Correo</td>
+        </tr>
+        <tr>
+            <td>📞 Teléfono</td>
+            <td>@Model.Telefono</td>
+        </tr>
+        <tr>
+            <td>🏠 Dirección</td>
+            <td>@Model.Direccion</td>
+        </tr>
+ 
+    </table>
+
+    <div class="btn-group">
+        <a asp-action="Edit" asp-route-id="@Model.IdUsuario" class="btn btn-primary">✏️ Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">🔙 Volver</a>
+    </div>
+</div>
